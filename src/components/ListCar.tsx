@@ -2,9 +2,13 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {deleteCar, getCars} from "../api/carapi.ts";
 import {DataGrid, GridCellParams, GridColDef, GridToolbar} from "@mui/x-data-grid";
 import {useState} from "react";
-import {Snackbar} from "@mui/material";
+import {Snackbar, Tooltip} from "@mui/material";
 import AddCar from "./AddCar.tsx";
 import EditCar from "./EditCar.tsx";
+
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 
 function ListCar() {
 
@@ -37,14 +41,15 @@ function ListCar() {
             filterable: false,
             disableColumnMenu: true,
             renderCell: (params: GridCellParams) => (
-                <button
-                    onClick={() => {
+                <Tooltip title="Delete car">
+                    <IconButton aria-label="delete" size="small" onClick={() => {
                         if (window.confirm(`Are you sure you want to delete ${params.row.brand} ${params.row.model}?`)) {
                             mutate(params.row._links.car.href)
                         }
                     }}>
-                    Delete
-                </button>
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
             )
         }
     ]

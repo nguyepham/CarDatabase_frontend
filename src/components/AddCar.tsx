@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {Car} from "../type.ts";
 import {addCar} from "../api/carapi.ts";
-import {Dialog, DialogActions, DialogTitle} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogTitle} from "@mui/material";
 import CarDialog from "./CarDialog.tsx";
 
 function AddCar() {
@@ -53,13 +53,13 @@ function AddCar() {
 
     return(
         <>
-            <button onClick={handleOpen}>New Car</button>
+            <Button onClick={handleOpen}>New Car</Button>
             <Dialog open={dialog} onClose={handleClose}>
                 <DialogTitle>New car</DialogTitle>
                 <CarDialog car={car} handleChange={handleChange} />
                 <DialogActions>
-                    <button onClick={handleClose}>Cancel</button>
-                    <button onClick={handleSave}>Save</button>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleSave}>Save</Button>
                 </DialogActions>
             </Dialog>
         </>
