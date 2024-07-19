@@ -3,12 +3,13 @@ import {deleteCar, getCars} from "../api/carapi.ts";
 import {DataGrid, GridCellParams, GridColDef} from "@mui/x-data-grid";
 import {useState} from "react";
 import {Snackbar} from "@mui/material";
+import AddCar from "./AddCar.tsx";
 
-function Carlist() {
-
-    const [toast, setToast] = useState(false)
+function ListCar() {
 
     const queryClient = useQueryClient()
+
+    const [toast, setToast] = useState(false)
 
     const columns: GridColDef[] = [
         {field: "brand", headerName: "Brand", width: 200},
@@ -38,7 +39,7 @@ function Carlist() {
     ]
 
     const {data, error, isSuccess} = useQuery({
-        queryKey: ["car"],
+        queryKey: ["cars"],
         queryFn: getCars
     })
 
@@ -47,7 +48,7 @@ function Carlist() {
         onSuccess: () => {
             // Car deleted
             setToast(true)
-            queryClient.invalidateQueries({queryKey: ["car"]})
+            queryClient.invalidateQueries({queryKey: ["cars"]})
         },
         onError: (err) => {
             console.log(err)
@@ -63,6 +64,7 @@ function Carlist() {
     else {
         return (
             <>
+                <AddCar />
                 <DataGrid
                     rows={data}
                     columns={columns}
@@ -80,4 +82,4 @@ function Carlist() {
     }
 }
 
-export default Carlist
+export default ListCar
