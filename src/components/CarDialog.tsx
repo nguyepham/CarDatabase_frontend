@@ -3,7 +3,7 @@ import React from "react";
 import {DialogContent} from "@mui/material";
 
 type DialogProps = {
-    car: Car;
+    car: Car
     handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 

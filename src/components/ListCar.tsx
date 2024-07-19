@@ -4,6 +4,7 @@ import {DataGrid, GridCellParams, GridColDef} from "@mui/x-data-grid";
 import {useState} from "react";
 import {Snackbar} from "@mui/material";
 import AddCar from "./AddCar.tsx";
+import EditCar from "./EditCar.tsx";
 
 function ListCar() {
 
@@ -18,6 +19,16 @@ function ListCar() {
         {field: "registrationNumber", headerName: "Reg.nr", width: 150},
         {field: "modelYear", headerName: "Model Year", width: 150},
         {field: "price", headerName: "Price", width: 150},
+        {
+            field: 'edit',
+            headerName: '',
+            width: 90,
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            renderCell: (params: GridCellParams) =>
+                <EditCar cardata={params.row} />
+        },
         {
             field: "delete",
             headerName: "",
@@ -46,7 +57,6 @@ function ListCar() {
     const {mutate} = useMutation({
         mutationFn: deleteCar,
         onSuccess: () => {
-            // Car deleted
             setToast(true)
             queryClient.invalidateQueries({queryKey: ["cars"]})
         },

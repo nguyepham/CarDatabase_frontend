@@ -1,11 +1,15 @@
+import {Car, CarEntry, CarResponse} from "../type.ts";
 import React, {useState} from "react";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {Car} from "../type.ts";
-import {addCar} from "../api/carapi.ts";
 import {Dialog, DialogActions, DialogTitle} from "@mui/material";
 import CarDialog from "./CarDialog.tsx";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {updateCar} from "../api/carapi.ts";
 
-function AddCar() {
+type FormProps = {
+    cardata: CarResponse
+}
+
+function EditCar({cardata}: FormProps) {
 
     const queryClient = useQueryClient()
 
@@ -20,16 +24,32 @@ function AddCar() {
         price: 0
     })
 
-    const handleOpen = () => setDialog(true)
+    const handleOpen = () => {
+        setCar({
+            brand: cardata.brand,
+            model: cardata.model,
+            color: cardata.color,
+            registrationNumber: cardata.registrationNumber,
+            modelYear: cardata.modelYear,
+            price: cardata.price
+        })
 
-    const handleClose = () => setDialog(false)
+        setDialog(true)
+    }
+
+    const handleClose = () => {
+        setDialog(false)
+    }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCar({...car, [event.target.name]: event.target.value})
     }
 
     const handleSave = () => {
-        mutate(car)
+        const url = cardata._links.self.href
+        const carEntry: CarEntry = {car, url}
+
+        mutate(carEntry)
         setCar({
             brand: "",
             model: "",
@@ -38,24 +58,27 @@ function AddCar() {
             modelYear: 0,
             price: 0
         })
-        handleClose()
+
+        setDialog(false)
     }
 
-    const { mutate } = useMutation({
-        mutationFn: addCar,
+    const {mutate} = useMutation({
+        mutationFn: updateCar,
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["cars"]})
         },
         onError: (err) => {
-            console.error(err)
-        },
+            console.log(err)
+        }
     })
 
-    return(
+    return (
         <>
-            <button onClick={handleOpen}>New Car</button>
+            <button onClick={handleOpen}>
+                Edit
+            </button>
             <Dialog open={dialog} onClose={handleClose}>
-                <DialogTitle>New car</DialogTitle>
+                <DialogTitle>Edit car</DialogTitle>
                 <CarDialog car={car} handleChange={handleChange} />
                 <DialogActions>
                     <button onClick={handleClose}>Cancel</button>
@@ -66,4 +89,4 @@ function AddCar() {
     )
 }
 
-export default AddCar
+export default EditCar
