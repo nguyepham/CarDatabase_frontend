@@ -1,8 +1,12 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {deleteCar, getCars} from "../api/carapi.ts";
 import {DataGrid, GridCellParams, GridColDef} from "@mui/x-data-grid";
+import {useState} from "react";
+import {Snackbar} from "@mui/material";
 
 function Carlist() {
+
+    const [toast, setToast] = useState(false)
 
     const queryClient = useQueryClient()
 
@@ -38,6 +42,7 @@ function Carlist() {
         mutationFn: deleteCar,
         onSuccess: () => {
             // Car deleted
+            setToast(true)
             queryClient.invalidateQueries({queryKey: ["car"]})
         },
         onError: (err) => {
@@ -53,12 +58,20 @@ function Carlist() {
     }
     else {
         return (
-            <DataGrid
-                rows={data}
-                columns={columns}
-                disableRowSelectionOnClick={true}
-                getRowId={row => row._links.self.href}
-            />
+            <>
+                <DataGrid
+                    rows={data}
+                    columns={columns}
+                    disableRowSelectionOnClick={true}
+                    getRowId={row => row._links.self.href}
+                />
+                <Snackbar
+                    open={toast}
+                    autoHideDuration={2000}
+                    onClose={() => setToast(false)}
+                    message="Car deleted"
+                />
+            </>
         )
     }
 }
