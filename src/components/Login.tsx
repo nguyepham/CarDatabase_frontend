@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import ListCar from "./ListCar.tsx";
 import { Button, Stack, TextField } from "@mui/material";
@@ -19,6 +19,14 @@ function Login({ updateAccountName }: CallbackFn) {
     password: ""
   })
   const [isAuth, setAuth] = useState(false)
+
+  // If user/admin hasn't signed out, re-fetch the car list when refreshing the page
+  useEffect(() => {
+    if (sessionStorage.getItem("jwtToken") !== null) {
+      updateAccountName()
+      setAuth(true)
+    }
+  }, [])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [event.target.name]: event.target.value })
