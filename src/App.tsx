@@ -2,11 +2,15 @@ import { AppBar, Container, CssBaseline, Toolbar, Typography } from "@mui/materi
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Login from "./components/Login.tsx";
 import AccountName from "./components/AccountName.tsx";
+import { useState } from "react";
 
 const queryClient = new QueryClient()
 
 function App() {
 
+  const [isAuth, setAuth] = useState(false)
+
+  const getAccountName: () => void = () => setAuth(true)
 
   return (
     // The Container is used to center component content horizontally
@@ -14,17 +18,18 @@ function App() {
       {/*The CssBaseline is used to ensure uniform appearance across different browser    */}
       <CssBaseline />
       <AppBar position='static'>
-        <Toolbar>
+        <Toolbar style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}>
           <Typography variant='h5'>
             Car Shop
           </Typography>
-          <Typography variant='h6'>
-            <AccountName />
-          </Typography>
+          <AccountName isAuth={isAuth} />
         </Toolbar>
       </AppBar>
       <QueryClientProvider client={queryClient}>
-        <Login />
+        <Login getAccountName={getAccountName} />
       </QueryClientProvider>
     </Container>
   )

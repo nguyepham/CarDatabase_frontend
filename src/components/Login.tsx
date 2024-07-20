@@ -8,7 +8,11 @@ type User = {
   password: string;
 }
 
-function Login() {
+type CallbackFn = {
+  getAccountName: () => void
+}
+
+function Login({ getAccountName }: CallbackFn) {
 
   const [user, setUser] = useState<User>({
     username: "",
@@ -32,6 +36,9 @@ function Login() {
         if (jwtToken !== null) {
           sessionStorage.setItem("jwtToken", jwtToken)
           sessionStorage.setItem("accName", accName)
+          // This method is a callback function for the actual method in this component's parent component
+          // It is used here to lift the `isAuth` state from the Login component to the App component
+          getAccountName()
           setAuth(true)
         }
       })
