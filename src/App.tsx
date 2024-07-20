@@ -10,7 +10,12 @@ function App() {
 
   const [isAuth, setAuth] = useState(false)
 
-  const getAccountName: () => void = () => setAuth(true)
+  const updateAccountName: () => void = () => {
+    if (isAuth) {
+      setAuth(false)
+    }
+    else setAuth(true)
+  }
 
   return (
     // The Container is used to center component content horizontally
@@ -23,13 +28,13 @@ function App() {
           justifyContent: "space-between",
         }}>
           <Typography variant='h5'>
-            Car Shop
+            Carshop
           </Typography>
           <AccountName isAuth={isAuth} />
         </Toolbar>
       </AppBar>
       <QueryClientProvider client={queryClient}>
-        <Login getAccountName={getAccountName} />
+        <Login updateAccountName={updateAccountName} />
       </QueryClientProvider>
     </Container>
   )

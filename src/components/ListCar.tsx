@@ -2,15 +2,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteCar, getCars } from "../api/carapi.ts";
 import { DataGrid, GridCellParams, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useState } from "react";
-import { Snackbar, Tooltip } from "@mui/material";
+import { Button, Snackbar, Stack, Tooltip } from "@mui/material";
 import AddCar from "./AddCar.tsx";
 import EditCar from "./EditCar.tsx";
 
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+type ListcarProps = {
+  handleLogout?: () => void
+}
 
-function ListCar() {
+function ListCar({ handleLogout }: ListcarProps) {
 
   const queryClient = useQueryClient()
 
@@ -77,7 +80,11 @@ function ListCar() {
   } else {
     return (
       <>
-        <AddCar />
+        <Stack direction="row" alignItems="center"
+          justifyContent="space-between">
+          <AddCar />
+          <Button onClick={handleLogout}>Log out</Button>
+        </Stack>
         <DataGrid
           rows={data}
           columns={columns}

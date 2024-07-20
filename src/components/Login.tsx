@@ -9,10 +9,10 @@ type User = {
 }
 
 type CallbackFn = {
-  getAccountName: () => void
+  updateAccountName: () => void
 }
 
-function Login({ getAccountName }: CallbackFn) {
+function Login({ updateAccountName }: CallbackFn) {
 
   const [user, setUser] = useState<User>({
     username: "",
@@ -38,15 +38,25 @@ function Login({ getAccountName }: CallbackFn) {
           sessionStorage.setItem("accName", accName)
           // This method is a callback function for the actual method in this component's parent component
           // It is used here to lift the `isAuth` state from the Login component to the App component
-          getAccountName()
+          updateAccountName()
+          // Here we change the value of the Login's `isAuth` state,
+          // not the App's `isAuth` state
           setAuth(true)
         }
       })
       .catch(err => console.error(err))
   }
 
+  const logOut = () => {
+    sessionStorage.clear()
+    updateAccountName()
+    // Here we change the value of the Login's `isAuth` state,
+    // not the App's `isAuth` state
+    setAuth(false)
+  }
+
   if (isAuth) {
-    return <ListCar />
+    return <ListCar handleLogout={logOut} />
   } else {
     return (
       <Stack spacing={2} alignItems="center" mt={2}>
