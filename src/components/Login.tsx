@@ -68,6 +68,7 @@ function Login({ updateAccountName }: CallbackFn) {
   const logOut = () => {
     sessionStorage.clear()
     updateAccountName()
+    setUser({ username: "", password: "" })
     // Here we change the value of the Login's `isAuth` state,
     // not the App's `isAuth` state
     setAuth(false)
