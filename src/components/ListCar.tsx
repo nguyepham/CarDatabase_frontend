@@ -19,6 +19,20 @@ function ListCar({ handleLogout }: ListcarProps) {
 
   const [toast, setToast] = useState(false)
 
+  const [toastDenyAdd, setToastDenyAdd] = useState(false)
+  
+  const [toastDenyEdit, setToastDenyEdit] = useState(false)
+  
+  const [toastDenyDelete, setToastDenyDelete] = useState(false)
+
+  const denyAdd: () => void = () => {
+    setToastDenyAdd(true)
+  }
+
+  const denyEdit: () => void = () => {
+    setToastDenyEdit(true)
+  }
+
   const columns: GridColDef[] = [
     { field: "brand", headerName: "Brand", width: 200 },
     { field: "model", headerName: "Model", width: 200 },
@@ -34,7 +48,7 @@ function ListCar({ handleLogout }: ListcarProps) {
       filterable: false,
       disableColumnMenu: true,
       renderCell: (params: GridCellParams) =>
-        <EditCar cardata={params.row} />
+        <EditCar denyEdit={denyEdit} cardata={params.row} />
     },
     {
       field: "delete",
@@ -46,6 +60,10 @@ function ListCar({ handleLogout }: ListcarProps) {
       renderCell: (params: GridCellParams) => (
         <Tooltip title="Delete car">
           <IconButton aria-label="delete" size="small" onClick={() => {
+            if (sessionStorage.getItem("accName") !== "admin") {
+              setToastDenyDelete(true)
+              return
+            }
             if (window.confirm(`Are you sure you want to delete ${params.row.brand} ${params.row.model}?`)) {
               mutate(params.row._links.car.href)
             }
@@ -82,7 +100,7 @@ function ListCar({ handleLogout }: ListcarProps) {
       <>
         <Stack direction="row" alignItems="center"
           justifyContent="space-between">
-          <AddCar />
+          <AddCar denyAdd={denyAdd}/>
           <Button onClick={handleLogout}>Log out</Button>
         </Stack>
         <DataGrid
@@ -97,6 +115,24 @@ function ListCar({ handleLogout }: ListcarProps) {
           autoHideDuration={2000}
           onClose={() => setToast(false)}
           message="Car deleted"
+        />
+        <Snackbar
+          open={toastDenyAdd}
+          autoHideDuration={2000}
+          onClose={() => setToastDenyAdd(false)}
+          message="Only admin can add cars"
+        />
+        <Snackbar
+          open={toastDenyEdit}
+          autoHideDuration={2000}
+          onClose={() => setToastDenyEdit(false)}
+          message="Only admin can edit cars"
+        />
+        <Snackbar
+          open={toastDenyDelete}
+          autoHideDuration={2000}
+          onClose={() => setToastDenyDelete(false)}
+          message="Only admin can delete cars"
         />
       </>
     )

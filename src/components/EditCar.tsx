@@ -9,10 +9,11 @@ import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 
 type FormProps = {
-  cardata: CarResponse
+  denyEdit: () => void;
+  cardata: CarResponse;
 }
 
-function EditCar({ cardata }: FormProps) {
+function EditCar({ denyEdit, cardata }: FormProps) {
 
   const queryClient = useQueryClient()
 
@@ -78,7 +79,14 @@ function EditCar({ cardata }: FormProps) {
   return (
     <>
       <Tooltip title="Edit car">
-        <IconButton aria-label="edit" size="small" onClick={handleOpen}>
+        <IconButton aria-label="edit" size="small" onClick={() => {
+          if (sessionStorage.getItem("accName") !== "admin") {
+            // The callback function here is used for state lifting
+            denyEdit()
+            return
+          }
+          handleOpen()
+        }}>
           <EditIcon fontSize="small" />
         </IconButton>
       </Tooltip>

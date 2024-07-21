@@ -5,7 +5,11 @@ import { addCar } from "../api/carapi.ts";
 import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
 import CarDialog from "./CarDialog.tsx";
 
-function AddCar() {
+type FormProps = {
+  denyAdd: () => void;
+}
+
+function AddCar({ denyAdd }: FormProps) {
 
   const queryClient = useQueryClient()
 
@@ -53,7 +57,15 @@ function AddCar() {
 
   return (
     <>
-      <Button onClick={handleOpen}>New Car</Button>
+      <Button onClick={() => {
+        if (sessionStorage.getItem("accName") !== "admin") {
+          // This method is a callback function for the actual method in this component's parent component
+          denyAdd()
+          return
+        }
+        handleOpen()
+        
+      }}>New Car</Button>
       <Dialog open={dialog} onClose={handleClose}>
         <DialogTitle>New car</DialogTitle>
         <CarDialog car={car} handleChange={handleChange} />
